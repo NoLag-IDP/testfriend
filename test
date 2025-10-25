@@ -1,0 +1,51 @@
+local starterGui = game:GetService("StarterGui")
+local vim = game:GetService("VirtualInputManager")
+local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Function to get Player by username
+local function getPlayerByName(username)
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player.Name == username then  -- Case-sensitive match
+            return player
+        end
+    end
+    return nil  -- Player not found
+end
+
+-- Define the target username (change this to your desired username)
+local targetUsername = "gagst34l3r"  -- Replace with the actual username
+
+-- Get the Player object
+local otherPlayer = getPlayerByName(targetUsername)
+if not otherPlayer then
+    warn("Player with username '" .. targetUsername .. "' not found in the game.")
+    return  -- Exit if not found
+end
+
+-- Trigger the friend request prompt
+starterGui:SetCore("PromptSendFriendRequest", otherPlayer)
+
+-- Wait for GUI to appear
+wait(0.5)
+
+-- Find the prompt (hypothetical structure; inspect in-game for accuracy)
+local prompt = playerGui:FindFirstChild("FriendRequestPrompt")  -- May vary
+if prompt then
+    local sendButton = prompt:FindFirstChild("SendButton")  -- May vary
+    if sendButton then
+        -- Calculate button center
+        local absPos = sendButton.AbsolutePosition
+        local absSize = sendButton.AbsoluteSize
+        local x = absPos.X + absSize.X / 2
+        local y = absPos.Y + absSize.Y / 2
+        
+        -- Simulate click
+        vim:SendMouseButtonEvent(x, y, 0, true, game, 0)  -- Press
+        wait(0.1)
+        vim:SendMouseButtonEvent(x, y, 0, false, game, 0)  -- Release
+    else
+        warn("Send button not found in prompt.")
+    end
+else
+    warn("Friend request prompt not found.")
+end
