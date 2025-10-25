@@ -1,0 +1,69 @@
+local starterGui = game:GetService("StarterGui")
+local vim = game:GetService("VirtualInputManager")
+local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Function to get Player by username
+local function getPlayerByName(username)
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player.Name == username then
+            return player
+        end
+    end
+    return nil
+end
+
+-- Define the target username
+local targetUsername = "ExampleUser"  -- Replace with actual username
+
+-- Get the Player object
+local otherPlayer = getPlayerByName(targetUsername)
+if not otherPlayer then
+    warn("Player with username '" .. targetUsername .. "' not found.")
+    return
+end
+
+-- 3-second delay before triggering the prompt
+print("Waiting 3 seconds before triggering friend request prompt...")
+wait(3)
+
+-- Trigger the prompt
+starterGui:SetCore("PromptSendFriendRequest", otherPlayer)
+print("Friend request prompt triggered for " .. targetUsername)
+
+-- Wait for GUI to load
+wait(1)
+
+-- Inspect and find the prompt (update these paths based on your inspection)
+local prompt = playerGui:FindFirstChild("FriendRequestPrompt") or playerGui.CoreGui:FindFirstChild("FriendRequestDialog")  -- Hypothetical; replace with real path
+if not prompt then
+    warn("Friend request prompt not found. Check GUI hierarchy.")
+    return
+end
+print("Prompt found:", prompt.Name)
+
+-- Find the send button (update path)
+local sendButton = prompt:FindFirstChild("SendButton") or prompt.Frame:FindFirstChild("SendRequest")  -- Hypothetical; replace
+if not sendButton then
+    warn("Send button not found in prompt.")
+    return
+end
+print("Send button found:", sendButton.Name)
+
+-- Check if button is visible and enabled
+if not sendButton.Visible or not sendButton.Active then
+    warn("Button is not visible or active.")
+    return
+end
+
+-- Calculate button center
+local absPos = sendButton.AbsolutePosition
+local absSize = sendButton.AbsoluteSize
+local x = absPos.X + absSize.X / 2
+local y = absPos.Y + absSize.Y / 2
+print("Button position: X=" .. x .. ", Y=" .. y)
+
+-- Simulate click
+vim:SendMouseButtonEvent(x, y, 0, true, game, 0)  -- Press
+wait(0.1)
+vim:SendMouseButtonEvent(x, y, 0, false, game, 0)  -- Release
+print("Click simulated on send button.")
