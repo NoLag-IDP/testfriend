@@ -1,0 +1,3 @@
+-- Executor Support
+game.Players.LocalPlayer.PlayerScripts:Destroy()
+game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.All,false)
